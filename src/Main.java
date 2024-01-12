@@ -17,6 +17,7 @@ public class Main {
         countCharacters(dictionary);
         System.out.println("Encoded file : ");
         countCharacters(encoded);
+        System.out.println("  ");
 
     }
 }
