@@ -4,8 +4,9 @@ import java.io.*;
 
 import static constants.CryptoAlphabet.ALPHABET_FOR_STATISTICAL_ANALYSIS;
 
+
 public class EncodeForStatisticalAnalysis {
-    private static String readTextFromFile(File fileName) throws IOException {
+    static String readTextFromFile(File fileName) throws IOException {
         StringBuilder content = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -15,11 +16,12 @@ public class EncodeForStatisticalAnalysis {
         }
         return content.toString();
     }
-    private static void rewriteTextToFile(File fileName, String content) throws IOException {
+    static void rewriteTextToFile(File fileName, String content) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
             writer.write(content);
         }
     }
+
     public static void convertFileToLowerCase(File inputFile, File outputFile) {
         try {
             String content = readTextFromFile(inputFile);
