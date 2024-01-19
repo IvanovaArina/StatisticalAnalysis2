@@ -5,41 +5,43 @@ import java.util.*;
 import java.util.Map;
 import java.util.Scanner;
 
+import static services.FileIO.readTextFromFile;
+import static services.FileIO.rewriteTextToFile;
+
 
 public class StatisticalAnalysis {
-    //в статистическом анализе сначала надо сделать статитстику вхождения каждого символа в текст в заданном файле
+    //РІ СЃС‚Р°С‚РёСЃС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Рµ СЃРЅР°С‡Р°Р»Р° РЅР°РґРѕ СЃРґРµР»Р°С‚СЊ СЃС‚Р°С‚РёС‚СЃС‚РёРєСѓ РІС…РѕР¶РґРµРЅРёСЏ РєР°Р¶РґРѕРіРѕ СЃРёРјРІРѕР»Р° РІ С‚РµРєСЃС‚ РІ Р·Р°РґР°РЅРЅРѕРј С„Р°Р№Р»Рµ
     private static Map<Character, Integer> countCharactersInEncodedFile(File file) {
-        // Создаем LinkedHashMap, который сохраняет порядок вставки
+        // РЎРѕР·РґР°РµРј LinkedHashMap, РєРѕС‚РѕСЂС‹Р№ СЃРѕС…СЂР°РЅСЏРµС‚ РїРѕСЂСЏРґРѕРє РІСЃС‚Р°РІРєРё
         Map<Character, Integer> sortedCharCountMap = new LinkedHashMap<>();
 
         try {
-            // Создаем BufferedReader для чтения файла
+            // РЎРѕР·РґР°РµРј BufferedReader РґР»СЏ С‡С‚РµРЅРёСЏ С„Р°Р№Р»Р°
             BufferedReader reader = new BufferedReader(new FileReader(file));
             int currentChar;
-            // Создаем Map для хранения статистики символов
+            // РЎРѕР·РґР°РµРј Map РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЃС‚Р°С‚РёСЃС‚РёРєРё СЃРёРјРІРѕР»РѕРІ
             Map<Character, Integer> charCountMap = new HashMap<>();
             while ((currentChar = reader.read()) != -1) {
                 char charValue = (char) currentChar;
                 if (charValue != '\n')
-                    // Обновляем статистику
+                    // РћР±РЅРѕРІР»СЏРµРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ
                     charCountMap.put(charValue, charCountMap.getOrDefault(charValue, 0) + 1);
             }
 
-            // Закрываем BufferedReader после использования
+            // Р—Р°РєСЂС‹РІР°РµРј BufferedReader РїРѕСЃР»Рµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
             reader.close();
 
-            // Конвертируем Map в список
+            // РљРѕРЅРІРµСЂС‚РёСЂСѓРµРј Map РІ СЃРїРёСЃРѕРє
             List<Map.Entry<Character, Integer>> list = new ArrayList<>(charCountMap.entrySet());
 
-            // Сортируем список по убыванию значений
+            // РЎРѕСЂС‚РёСЂСѓРµРј СЃРїРёСЃРѕРє РїРѕ СѓР±С‹РІР°РЅРёСЋ Р·РЅР°С‡РµРЅРёР№
             list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-            // Добавляем отсортированные элементы в LinkedHashMap
+            // Р”РѕР±Р°РІР»СЏРµРј РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ РІ LinkedHashMap
             for (Map.Entry<Character, Integer> entry : list) {
                 sortedCharCountMap.put(entry.getKey(), entry.getValue());
             }
 
-
-            // Возвращаем отсортированный Map
+            // Р’РѕР·РІСЂР°С‰Р°РµРј РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ Map
             return sortedCharCountMap;
 
         } catch (IOException e) {
@@ -48,42 +50,42 @@ public class StatisticalAnalysis {
         return null;
     }
 
-    private static Map<Character, Integer> countCharactersInDecodedFile(Map<Character, Integer> StatisticsInEncodedFile, File file) {
-        // Создаем LinkedHashMap, который сохраняет порядок вставки
+    private static Map<Character, Integer> countCharactersInDictionaryFile(Map<Character, Integer> StatisticsInEncodedFile, File file) {
+        // РЎРѕР·РґР°РµРј LinkedHashMap, РєРѕС‚РѕСЂС‹Р№ СЃРѕС…СЂР°РЅСЏРµС‚ РїРѕСЂСЏРґРѕРє РІСЃС‚Р°РІРєРё
         Map<Character, Integer> sortedCharCountMap = new LinkedHashMap<>();
 
         try {
-            // Создаем BufferedReader для чтения файла
+            // РЎРѕР·РґР°РµРј BufferedReader РґР»СЏ С‡С‚РµРЅРёСЏ С„Р°Р№Р»Р°
             BufferedReader reader = new BufferedReader(new FileReader(file));
             int currentChar;
-            // Создаем Map для хранения статистики символов
+            // РЎРѕР·РґР°РµРј Map РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЃС‚Р°С‚РёСЃС‚РёРєРё СЃРёРјРІРѕР»РѕРІ
             Map<Character, Integer> charCountMap = new HashMap<>();
             while ((currentChar = reader.read()) != -1) {
                 char charValue = (char) currentChar;
                 if (charValue != '\n' && StatisticsInEncodedFile.containsKey(charValue))
-                    // Обновляем статистику
+                    // РћР±РЅРѕРІР»СЏРµРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ
                     charCountMap.put(charValue, charCountMap.getOrDefault(charValue, 0) + 1);
             }
 
-            // Закрываем BufferedReader после использования
+            // Р—Р°РєСЂС‹РІР°РµРј BufferedReader РїРѕСЃР»Рµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
             reader.close();
 
-            // Конвертируем Map в список
+            // РљРѕРЅРІРµСЂС‚РёСЂСѓРµРј Map РІ СЃРїРёСЃРѕРє
             List<Map.Entry<Character, Integer>> list = new ArrayList<>(charCountMap.entrySet());
 
-            // Сортируем список по убыванию значений
+            // РЎРѕСЂС‚РёСЂСѓРµРј СЃРїРёСЃРѕРє РїРѕ СѓР±С‹РІР°РЅРёСЋ Р·РЅР°С‡РµРЅРёР№
             list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-            // Добавляем отсортированные элементы в LinkedHashMap
+            // Р”РѕР±Р°РІР»СЏРµРј РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ РІ LinkedHashMap
             for (Map.Entry<Character, Integer> entry : list) {
                 sortedCharCountMap.put(entry.getKey(), entry.getValue());
             }
-//            // Выводим отсортированный список с номерами
+//            // Р’С‹РІРѕРґРёРј РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ СЃРїРёСЃРѕРє СЃ РЅРѕРјРµСЂР°РјРё
 //            for (int i = 0; i < list.size(); i++) {
 //                Map.Entry<Character, Integer> entry = list.get(i);
 //                System.out.println((i + 1) + ". " + entry.getKey() + " " + entry.getValue());
 //            }
 
-            // Возвращаем отсортированный Map
+            // Р’РѕР·РІСЂР°С‰Р°РµРј РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ Map
             return sortedCharCountMap;
 
         } catch (IOException e) {
@@ -94,18 +96,18 @@ public class StatisticalAnalysis {
 
     private static void makeMapsEqual(Map<Character, Integer> dictionaryStatistics, Map<Character, Integer> encodedStatistics) {
 
-        // Создаем копии мапов
+        // РЎРѕР·РґР°РµРј РєРѕРїРёРё РјР°РїРѕРІ
         Map<Character, Integer> commonInDictionary = new HashMap<>(dictionaryStatistics);
         Map<Character, Integer> commonInEncoded = new HashMap<>(encodedStatistics);
 
-        // Удаляем из каждой копии элементы, которые отсутствуют в другой мапе
+        // РЈРґР°Р»СЏРµРј РёР· РєР°Р¶РґРѕР№ РєРѕРїРёРё СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РІ РґСЂСѓРіРѕР№ РјР°РїРµ
         commonInDictionary.keySet().retainAll(encodedStatistics.keySet());
         commonInEncoded.keySet().retainAll(dictionaryStatistics.keySet());
 
-        // Теперь обновляем исходные мапы
+        // РўРµРїРµСЂСЊ РѕР±РЅРѕРІР»СЏРµРј РёСЃС…РѕРґРЅС‹Рµ РјР°РїС‹
         dictionaryStatistics.keySet().retainAll(commonInDictionary.keySet());
         encodedStatistics.keySet().retainAll(commonInEncoded.keySet());
-        // Выводим оба мэпа
+        // Р’С‹РІРѕРґРёРј РѕР±Р° РјСЌРїР°
         System.out.println("Dictionary Map: ");
         int i = 1;
         for (Map.Entry<Character, Integer> entry : dictionaryStatistics.entrySet()) {
@@ -122,26 +124,14 @@ public class StatisticalAnalysis {
     }
     private static void replaceCharactersFromStatistics(File encoded, File output, Map<Character, Integer> sourceMap, Map<Character, Integer> targetMap) {
         try {
-            // Создаем BufferedReader для чтения файла
-            BufferedReader reader = new BufferedReader(new FileReader(encoded));
 
-            // Чтение содержимого файла
-            StringBuilder content = new StringBuilder();
-            int currentChar;
-            while ((currentChar = reader.read()) != -1) {
-                char charValue = (char) currentChar;
-                content.append(charValue);
-            }
-
-            // Закрываем BufferedReader после использования
-            reader.close();
-
+            // Р§С‚РµРЅРёРµ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р°
+            StringBuilder content = new StringBuilder(readTextFromFile(encoded));
             char tmp = 0;
             char sourceChar = sourceMap.keySet().iterator().next();
             char targetChar = targetMap.keySet().iterator().next();
             while (!sourceMap.isEmpty() && !targetMap.isEmpty()) {
 
-                //content = replaceCharacter(content, sourceChar, targetChar);
                 if (tmp == 0) {
                     for (int i = 0; i < content.length(); i++) {
                         if (content.charAt(i) == sourceChar) {
@@ -154,7 +144,7 @@ public class StatisticalAnalysis {
                     sourceMap.remove(sourceChar);
                     targetMap.remove(targetChar);
                 } else if (tmp != 0) {
-                    //находим символ tmp в статистике словаря
+                    //РЅР°С…РѕРґРёРј СЃРёРјРІРѕР» tmp РІ СЃС‚Р°С‚РёСЃС‚РёРєРµ СЃР»РѕРІР°СЂСЏ
                     targetChar = findKeyByIndex(targetMap, findIndexByKey(sourceMap, tmp));
                     if (targetChar != 0) {
                         sourceChar = tmp;
@@ -168,12 +158,11 @@ public class StatisticalAnalysis {
                             sourceMap.remove(sourceChar);
                             targetMap.remove(targetChar);
                         }
-                    } else {//если этого символа больше нет в статистике закодированного файла - значит мы можем просто сделать замену, не боясь потерять данные
+                    } else {//РµСЃР»Рё СЌС‚РѕРіРѕ СЃРёРјРІРѕР»Р° Р±РѕР»СЊС€Рµ РЅРµС‚ РІ СЃС‚Р°С‚РёСЃС‚РёРєРµ Р·Р°РєРѕРґРёСЂРѕРІР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р° - Р·РЅР°С‡РёС‚ РјС‹ РјРѕР¶РµРј РїСЂРѕСЃС‚Рѕ СЃРґРµР»Р°С‚СЊ Р·Р°РјРµРЅСѓ, РЅРµ Р±РѕСЏСЃСЊ РїРѕС‚РµСЂСЏС‚СЊ РґР°РЅРЅС‹Рµ
                         for (int i = 0; i < content.length(); i++) {
                             if (content.charAt(i) == '$') {
                                 content.setCharAt(i, tmp);
                             }
-
                         }
                         sourceMap.remove(sourceChar);
                         targetMap.remove(tmp);
@@ -184,22 +173,15 @@ public class StatisticalAnalysis {
                 }
 
             }
-
-            // Запись изменений обратно в файл
-            FileWriter fileWriter = new FileWriter(output);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(content.toString());
-
-            // Закрываем BufferedWriter после использования
-            bufferedWriter.close();
-            fileWriter.close();
+            // Р—Р°РїРёСЃСЊ РёР·РјРµРЅРµРЅРёР№ РѕР±СЂР°С‚РЅРѕ РІ С„Р°Р№Р»
+            rewriteTextToFile(output, content.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Находит индекс элемента по ключу
+    // РќР°С…РѕРґРёС‚ РёРЅРґРµРєСЃ СЌР»РµРјРµРЅС‚Р° РїРѕ РєР»СЋС‡Сѓ
     private static int findIndexByKey(Map<Character, Integer> map, char key) {
         Set<Character> keySet = map.keySet();
         int index = 0;
@@ -209,10 +191,10 @@ public class StatisticalAnalysis {
             }
             index++;
         }
-        return -1; // Возвращаем -1, если ключ не найден
+        return -1; // Р’РѕР·РІСЂР°С‰Р°РµРј -1, РµСЃР»Рё РєР»СЋС‡ РЅРµ РЅР°Р№РґРµРЅ
     }
 
-    // Находит ключ по индексу
+    // РќР°С…РѕРґРёС‚ РєР»СЋС‡ РїРѕ РёРЅРґРµРєСЃСѓ
     private static char findKeyByIndex(Map<Character, Integer> map, int index) {
         Set<Character> keySet = map.keySet();
         int currentIndex = 0;
@@ -222,37 +204,24 @@ public class StatisticalAnalysis {
             }
             currentIndex++;
         }
-        return '\0'; // Возвращаем '\0', если индекс недействителен
+        return '\0'; // Р’РѕР·РІСЂР°С‰Р°РµРј '\0', РµСЃР»Рё РёРЅРґРµРєСЃ РЅРµРґРµР№СЃС‚РІРёС‚РµР»РµРЅ
     }
 
     private static void swapCharactersInFile(File file, char one, char another) {
         try {
-            // Создаем BufferedReader для чтения файла
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-
-            // Чтение содержимого файла
-            StringBuilder content = new StringBuilder();
-            int currentChar;
-            while ((currentChar = reader.read()) != -1) {
-                char charValue = (char) currentChar;
-                if (charValue == one) {
-                    content.append(another);
-                } else if (charValue == another) {
-                    content.append(one);
-                } else content.append(charValue);
+            String content = readTextFromFile(file);
+            // Р§С‚РµРЅРёРµ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р°
+            StringBuilder newContent = new StringBuilder();
+            for (char character : content.toCharArray()) {
+                if (character == one) {
+                    newContent.append(another);
+                } else if (character == another) {
+                    newContent.append(one);
+                } else {
+                    newContent.append(character);
+                }
             }
-
-            // Закрываем BufferedReader после использования
-            reader.close();
-            // Запись изменений обратно в файл
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(content.toString());
-
-            // Закрываем BufferedWriter после использования
-            bufferedWriter.close();
-            fileWriter.close();
-
+            rewriteTextToFile(file, newContent.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -263,7 +232,7 @@ public class StatisticalAnalysis {
         System.out.println("Encoded file : ");
         Map<Character, Integer> encodedStatistics = countCharactersInEncodedFile(encoded);
         System.out.println("Dictionary : ");
-        Map<Character, Integer> dictionaryStatistics = countCharactersInDecodedFile(encodedStatistics, dictionary);
+        Map<Character, Integer> dictionaryStatistics = countCharactersInDictionaryFile(encodedStatistics, dictionary);
         System.out.println("  ");
         makeMapsEqual(dictionaryStatistics, encodedStatistics);
         replaceCharactersFromStatistics(encoded, decoded, encodedStatistics,dictionaryStatistics);

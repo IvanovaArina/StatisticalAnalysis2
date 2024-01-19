@@ -2,25 +2,14 @@ package services;
 
 import java.io.*;
 
+
+
 import static constants.CryptoAlphabet.ALPHABET_FOR_STATISTICAL_ANALYSIS;
+import static services.FileIO.*;
 
 
 public class EncodeForStatisticalAnalysis {
-    static String readTextFromFile(File fileName) throws IOException {
-        StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-        }
-        return content.toString();
-    }
-    static void rewriteTextToFile(File fileName, String content) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false))) {
-            writer.write(content);
-        }
-    }
+
 
     public static void convertFileToLowerCase(File inputFile, File outputFile) {
         try {
@@ -42,15 +31,7 @@ public class EncodeForStatisticalAnalysis {
             return ch; // Символ не найден в алфавите, оставляем его без изменений
         }
     }
-//    public static String caesarCipherEncrypt(String text, int key) {
-//        StringBuilder result = new StringBuilder();
-//
-//        for (char character : text.toCharArray()) {
-//            result.append(encryptChar(character, key));
-//        }
-//
-//        return result.toString();
-//    }
+
     public static void encodeForStatisticalAnalysis(File inputFile, File outputFile, int key) {
         convertFileToLowerCase(inputFile, outputFile);
         try {
